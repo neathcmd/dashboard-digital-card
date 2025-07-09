@@ -19,6 +19,7 @@ export interface ICardResponse {
     page: number;
     limit: number;
   };
+  cards: string;
 }
 
 export interface ISocialLink {

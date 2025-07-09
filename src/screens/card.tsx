@@ -411,7 +411,7 @@ const CardsTable: React.FC = () => {
       };
     },
   });
-
+  console.log(data, "data===");
   const columns: ColumnDef<ICard>[] = [
     {
       id: "no",
@@ -489,7 +489,12 @@ const CardsTable: React.FC = () => {
   ];
 
   const table = useReactTable({
-    data: data?.data || [],
+    data:
+      typeof data?.cards === "object" &&
+      data?.cards !== null &&
+      "data" in (data.cards as Record<string, unknown>)
+        ? (data.cards as { data: ICard[] }).data
+        : [],
     columns,
     pageCount: data?.meta ? Math.ceil(data.meta.total / data.meta.limit) : -1,
     state: {
