@@ -9,7 +9,7 @@ type CardQueryParams = {
   email?: string;
 };
 
-export const requestCard = () => {
+export const requestCards = () => {
   const CARDS = async ({
     page,
     pageSize,
