@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-// import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -65,7 +65,7 @@ const CardsTable: React.FC = () => {
         sortOrder,
       }),
   });
-  console.log(data, "data===");
+  // console.log(data, "data===");
   const columns: ColumnDef<ICard>[] = [
     {
       id: "select",
@@ -95,27 +95,71 @@ const CardsTable: React.FC = () => {
       },
     },
     {
-      accessorKey: "card_name",
+      id: "full_name",
       header: ({ column }) => (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
         >
-          Card Name <ArrowUpDown className="ml-2 h-4 w-4" />
+          Full Name <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
+      cell: ({ row }) => {
+        return typeof row.original.user === "object" &&
+          row.original.user !== null &&
+          "full_name" in row.original.user
+          ? (row.original.user as { full_name: string }).full_name
+          : "";
+      },
+      filterFn: (row, __, value) => {
+        const userFullName =
+          typeof row.original.user === "object" &&
+          row.original.user !== null &&
+          "full_name" in row.original.user
+            ? (row.original.user as { full_name: string }).full_name
+            : undefined;
+        console.log("Filtering:", userFullName, value);
+
+        return userFullName
+          ? userFullName.toLowerCase().includes(value.toLowerCase())
+          : false;
+      },
     },
+
     {
-      accessorKey: "card_number",
-      header: "Card Number",
+      id: "user_name",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
+        >
+          Username <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => {
+        return typeof row.original.user === "object" &&
+          row.original.user !== null &&
+          "full_name" in row.original.user
+          ? (row.original.user as { user_name: string }).user_name
+          : "";
+      },
+      filterFn: (row, __, value) => {
+        const userUserName =
+          typeof row.original.user === "object" &&
+          row.original.user !== null &&
+          "full_name" in row.original.user
+            ? (row.original.user as { user_name: string }).user_name
+            : undefined;
+        console.log("Filtering:", userUserName, value);
+
+        return userUserName
+          ? userUserName.toLowerCase().includes(value.toLowerCase())
+          : false;
+      },
     },
     {
       accessorKey: "card_type",
       header: "Type",
-    },
-    {
-      accessorKey: "card_expiry_date",
-      header: "Expiry",
     },
     {
       accessorKey: "is_active",
@@ -186,7 +230,20 @@ const CardsTable: React.FC = () => {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Cards Table</h2>
+        <div className="space-y-6">
+          <h2 className="text-2xl font-bold">Cards Table</h2>
+          <Input
+            placeholder="Filter card name..."
+            value={
+              (table.getColumn("full_name")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("full_name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm"
+          />
+        </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline">
