@@ -43,10 +43,17 @@ dayjs.extend(timezone);
 
 const UsersTable = () => {
   const queryClient = useQueryClient();
-  const { UPDATE_USER } = requestUser();
+  const { UPDATE_USER, DELETE_USER } = requestUser();
   const { mutate: updateUserStatus, isPending: isUpdating } = useMutation({
     mutationFn: ({ id, status }: { id: string; status: boolean }) =>
       UPDATE_USER(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+    },
+  });
+  const { mutate: deleteUser } = useMutation({
+    // Mutation to delete a user
+    mutationFn: (id: string) => DELETE_USER(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
@@ -237,41 +244,33 @@ const UsersTable = () => {
         return <div className="text-sm text-muted-foreground">{fixedTime}</div>;
       },
     },
+    //Delete
     {
       id: "actions",
       header: "Action",
       enableHiding: false,
-      cell: ({}) => {
-        // const user = row.original;
+      cell: ({ row }) => {
+        const user = row.original;
         return (
           <div className="flex space-x-1.5 items-center">
             <Badge>
               <Pen />
               Edit
             </Badge>
-            <Badge variant="destructive">
-              <Trash /> Delete
+            <Badge
+              variant="destructive"
+              className="cursor-pointer hover:opacity-80"
+              onClick={() => {
+                if (
+                  window.confirm("Are you sure you want to delete this user?")
+                ) {
+                  deleteUser(user.id);
+                }
+              }}
+            >
+              <Trash size={16} /> Delete
             </Badge>
           </div>
-          //   <DropdownMenu>
-          //     <DropdownMenuTrigger asChild>
-          //       <Button variant="ghost" className="h-8 w-8 p-0">
-          //         <span className="sr-only">Open menu</span>
-          //         <MoreHorizontal />
-          //       </Button>
-          //     </DropdownMenuTrigger>
-          //     <DropdownMenuContent align="end">
-          //       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          //       <DropdownMenuItem
-          //         onClick={() => navigator.clipboard.writeText(user.id)}
-          //       >
-          //         Copy user ID
-          //       </DropdownMenuItem>
-          //       <DropdownMenuSeparator />
-          //       <DropdownMenuItem>View user details</DropdownMenuItem>
-          //       <DropdownMenuItem>Edit user</DropdownMenuItem>
-          //     </DropdownMenuContent>
-          //   </DropdownMenu>
         );
       },
     },
