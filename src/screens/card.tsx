@@ -125,21 +125,19 @@ const CardsTable: React.FC = () => {
           : false;
       },
     },
-
     {
       id: "user_name",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "desc")}
-        >
-          Username <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
+      accessorFn: (row) =>
+        typeof row.user === "object" &&
+        row.user !== null &&
+        "user_name" in row.user
+          ? (row.user as { user_name: string }).user_name
+          : "",
+      header: "Username", // Remove Button to allow built-in sorting
       cell: ({ row }) => {
         return typeof row.original.user === "object" &&
           row.original.user !== null &&
-          "full_name" in row.original.user
+          "user_name" in row.original.user
           ? (row.original.user as { user_name: string }).user_name
           : "";
       },
@@ -147,16 +145,17 @@ const CardsTable: React.FC = () => {
         const userUserName =
           typeof row.original.user === "object" &&
           row.original.user !== null &&
-          "full_name" in row.original.user
+          "user_name" in row.original.user
             ? (row.original.user as { user_name: string }).user_name
             : undefined;
-        console.log("Filtering:", userUserName, value);
 
         return userUserName
           ? userUserName.toLowerCase().includes(value.toLowerCase())
           : false;
       },
+      enableSorting: true,
     },
+
     {
       accessorKey: "card_type",
       header: "Type",

@@ -6,4 +6,4 @@ export const envCons = {
   isNodeDev: import.meta.env.NODE_ENV === "development",
 };
 
-console.log("✅ API BASE URL:", import.meta.env.VITE_API_BASE_URL);
+// console.log("✅ API BASE URL:", import.meta.env.VITE_API_BASE_URL);

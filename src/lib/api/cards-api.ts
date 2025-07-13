@@ -30,6 +30,7 @@ export const requestCards = () => {
     }
 
     const url = `/card/get-cards-by-admin?${query.toString()}`;
+    // const url = `/card/get-cards?is_deleted=false?${query.toString()}`;
     return await request({
       url,
       method: "GET",

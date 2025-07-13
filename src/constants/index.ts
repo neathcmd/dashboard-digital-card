@@ -9,7 +9,7 @@ export const _cons = {
   // other constant goes here
 };
 
-console.log("✅ API BASE URL:", import.meta.env.VITE_API_BASE_URL);
+// console.log("✅ API BASE URL:", import.meta.env.VITE_API_BASE_URL);
 
 // env
 export const _envCons = envCons;
