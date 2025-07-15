@@ -37,6 +37,17 @@ import timezone from "dayjs/plugin/timezone";
 import { Badge } from "@/components/ui/badge";
 import { useUserStatusDialog } from "@/store/user-status-dialog-store";
 import UserStatusAlertDialog from "@/components/user-status-dialong";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogAction,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -244,7 +255,7 @@ const UsersTable = () => {
         return <div className="text-sm text-muted-foreground">{fixedTime}</div>;
       },
     },
-    //Delete
+
     {
       id: "actions",
       header: "Action",
@@ -257,19 +268,34 @@ const UsersTable = () => {
               <Pen />
               Edit
             </Badge>
-            <Badge
-              variant="destructive"
-              className="cursor-pointer hover:opacity-80"
-              onClick={() => {
-                if (
-                  window.confirm("Are you sure you want to delete this user?")
-                ) {
-                  deleteUser(user.id);
-                }
-              }}
-            >
-              <Trash size={16} /> Delete
-            </Badge>
+
+            {/* Delete */}
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Badge
+                  variant="destructive"
+                  className="cursor-pointer hover:opacity-80"
+                >
+                  <Trash size={16} /> Delete
+                </Badge>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this user?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this user? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteUser(user.id)}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         );
       },
@@ -455,3 +481,31 @@ const UsersTable = () => {
 };
 
 export default UsersTable;
+
+{
+  /* <button onClick={() => setOpen(true)} className="">Delete</button>
+
+            <AlertDialog open={open} onOpenChange={setOpen}>
+              <AlertDialogTrigger asChild></AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete User</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete user <b>{user.full_name}</b>
+                    ? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      deleteUser(user.id);
+                      setOpen(false);
+                    }}
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog> */
+}
