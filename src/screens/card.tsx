@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { requestCards } from "@/lib/api/cards-api";
+import { useCardDialog } from "@/store/card-dialog-store";
 import {
   type ColumnDef,
   type ColumnFiltersState,
@@ -162,12 +163,22 @@ const CardsTable: React.FC = () => {
     },
     {
       accessorKey: "is_active",
-      header: "Status",
+      header: () => <div>Status</div>,
       cell: ({ row }) => {
-        const active = row.original.is_active;
+        const user = row.original;
+        const isActive = user.is_active;
+        // const payload = user.is_active == true ? false : true;
+        // console.log(payload);
+
         return (
-          <Badge variant={active ? "default" : "destructive"}>
-            {active ? "Active" : "Inactive"}
+          <Badge
+            variant={isActive ? "default" : "destructive"}
+            className="cursor-pointer hover:opacity-80"
+            onClick={() =>
+              useCardDialog.getState().setDialog(user.id, isActive)
+            }
+          >
+            {isActive ? "Active" : "Deactivate"}
           </Badge>
         );
       },
