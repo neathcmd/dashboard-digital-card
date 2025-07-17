@@ -29,7 +29,7 @@ export const requestCards = () => {
       query.append("email", email);
     }
 
-    const url = `/card/get-cards-by-admin?${query.toString()}`;
+    const url = `/card/get-cards-by-admin?is_deleted=true&sortOrder=DESC`;
     // const url = `/card/get-cards?is_deleted=false?${query.toString()}`;
     return await request({
       url,
@@ -46,9 +46,16 @@ export const requestCards = () => {
       },
     });
   };
+  const DELETE_CARD = async (id: string) => {
+    return await request({
+      url: `/card/delete-card/${id}`,
+      method: "DELETE",
+    });
+  };
 
   return {
     CARDS,
     UPDATE_CARD,
+    DELETE_CARD,
   };
 };

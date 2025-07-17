@@ -27,19 +27,31 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, ChevronDown, Pen, Trash } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Pagination } from "@/lib/pagination";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { Badge } from "@/components/ui/badge";
 import type { ICard } from "@/types/cards-type";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogAction,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogDescription,
+  AlertDialogTitle,
+  AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const CardsTable: React.FC = () => {
-  const { CARDS } = requestCards();
+  const queryClient = useQueryClient();
+  const { DELETE_CARD, CARDS } = requestCards();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -65,7 +77,15 @@ const CardsTable: React.FC = () => {
         sortBy: sortField,
         sortOrder,
       }),
+    // Delete
   });
+  const { mutate: deleteCard } = useMutation({
+    mutationFn: (id: string) => DELETE_CARD(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cards"] });
+    },
+  });
+
   // console.log(data, "data===");
   const columns: ColumnDef<ICard>[] = [
     {
@@ -94,7 +114,29 @@ const CardsTable: React.FC = () => {
         const { pageIndex, pageSize } = table.getState().pagination;
         return <div>{pageIndex * pageSize + row.index + 1}</div>;
       },
+      enableSorting: false,
+      enableHiding: false,
     },
+
+    {
+      accessorKey: "avatar",
+      header: "Avatar",
+      cell: ({ row }) => {
+        const avatar = row.getValue("avatar") as string;
+        const defaultAvatar =
+          "https://ui-avatars.com/api/?name=User&background=random";
+        return (
+          <img
+            src={avatar || defaultAvatar}
+            alt="User avatar"
+            className="h-10 w-10 rounded-full object-cover"
+          />
+        );
+      },
+      enableSorting: false,
+      enableHiding: false,
+    },
+
     {
       id: "full_name",
       header: ({ column }) => (
@@ -198,16 +240,47 @@ const CardsTable: React.FC = () => {
     {
       id: "actions",
       header: "Actions",
-      cell: () => (
-        <div className="flex gap-2">
-          <Badge>
-            <Pen className="w-3 h-3 mr-1" /> Edit
-          </Badge>
-          <Badge variant="destructive">
+      cell: ({ row }) => {
+        const card = row.original;
+        return (
+          <div className="flex gap-2">
+            <Badge>
+              <Pen className="w-3 h-3 mr-1" /> Edit
+            </Badge>
+            {/* <Badge variant="destructive">
             <Trash className="w-3 h-3 mr-1" /> Delete
-          </Badge>
-        </div>
-      ),
+          </Badge> */}
+
+            {/* Delete Card */}
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Badge
+                  variant="destructive"
+                  className="cursor-pointer hover:opacity-80"
+                >
+                  <Trash size={16} /> Delete
+                </Badge>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete this card?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this card? This action
+                    cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={() => deleteCard(card.id)}>
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        );
+      },
     },
   ];
 
