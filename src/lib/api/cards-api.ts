@@ -29,10 +29,10 @@ export const requestCards = () => {
       query.append("email", email);
     }
 
-    const url = `/card/get-cards-by-admin?is_deleted=true&sortOrder=DESC`;
+    // const url = `/card/get-cards-by-admin?is_deleted=false&sortOrder=DESC`;
     // const url = `/card/get-cards?is_deleted=false?${query.toString()}`;
     return await request({
-      url,
+      url: "/card/get-cards-by-admin?is_deleted=false&sortOrder=DESC",
       method: "GET",
     });
   };
@@ -48,7 +48,7 @@ export const requestCards = () => {
   };
   const DELETE_CARD = async (id: string) => {
     return await request({
-      url: `/card/delete-card/${id}`,
+      url: `/card/delete-card-by-admin/${id}`,
       method: "DELETE",
     });
   };

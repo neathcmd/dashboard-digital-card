@@ -1,4 +1,8 @@
+import type { ReactNode } from "react";
+
 export interface ICard {
+  email: ReactNode;
+  name: ReactNode;
   id: string;
   card_name: string;
   card_number: string;

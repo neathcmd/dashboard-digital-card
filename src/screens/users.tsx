@@ -481,31 +481,3 @@ const UsersTable = () => {
 };
 
 export default UsersTable;
-
-{
-  /* <button onClick={() => setOpen(true)} className="">Delete</button>
-
-            <AlertDialog open={open} onOpenChange={setOpen}>
-              <AlertDialogTrigger asChild></AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete User</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to delete user <b>{user.full_name}</b>
-                    ? This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={() => {
-                      deleteUser(user.id);
-                      setOpen(false);
-                    }}
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog> */
-}

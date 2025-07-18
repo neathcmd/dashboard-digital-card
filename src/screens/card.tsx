@@ -79,6 +79,7 @@ const CardsTable: React.FC = () => {
       }),
     // Delete
   });
+  console.log(data);
   const { mutate: deleteCard } = useMutation({
     mutationFn: (id: string) => DELETE_CARD(id),
     onSuccess: () => {
@@ -225,6 +226,7 @@ const CardsTable: React.FC = () => {
         );
       },
     },
+
     {
       accessorKey: "created_at",
       header: "Created At",
@@ -242,17 +244,16 @@ const CardsTable: React.FC = () => {
       header: "Actions",
       cell: ({ row }) => {
         const card = row.original;
+        console.log(card.id, "card table");
         return (
           <div className="flex gap-2">
             <Badge>
               <Pen className="w-3 h-3 mr-1" /> Edit
             </Badge>
             {/* <Badge variant="destructive">
-            <Trash className="w-3 h-3 mr-1" /> Delete
-          </Badge> */}
-
-            {/* Delete Card */}
-
+              <Trash className="w-3 h-3 mr-1" /> Delete
+            </Badge>
+            Delete Card */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Badge
@@ -272,7 +273,9 @@ const CardsTable: React.FC = () => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => deleteCard(card.id)}>
+                  <AlertDialogAction
+                    onClick={() => deleteCard(card.id)} // ✅ Make sure this runs
+                  >
                     Delete
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -283,14 +286,15 @@ const CardsTable: React.FC = () => {
       },
     },
   ];
+  console.log(data?.data, "===card");
 
   const table = useReactTable({
-    data:
-      typeof data?.cards === "object" &&
-      data?.cards !== null &&
-      "data" in (data.cards as Record<string, unknown>)
-        ? (data.cards as { data: ICard[] }).data
-        : [],
+    data: data?.data || [],
+    // typeof data?.cards === "object" &&
+    // data?.cards !== null &&
+    // "data" in (data.cards as Record<string, unknown>)
+    //   ? (data.cards as { data: ICard[] }).data
+    //   : [],
     columns,
     pageCount: data?.meta ? Math.ceil(data.meta.total / data.meta.limit) : -1,
     manualPagination: true,
