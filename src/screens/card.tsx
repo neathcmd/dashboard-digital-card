@@ -204,28 +204,6 @@ const CardsTable: React.FC = () => {
       accessorKey: "card_type",
       header: "Type",
     },
-    {
-      accessorKey: "is_active",
-      header: () => <div>Status</div>,
-      cell: ({ row }) => {
-        const user = row.original;
-        const isActive = user.is_active;
-        // const payload = user.is_active == true ? false : true;
-        // console.log(payload);
-
-        return (
-          <Badge
-            variant={isActive ? "default" : "destructive"}
-            className="cursor-pointer hover:opacity-80"
-            onClick={() =>
-              useCardDialog.getState().setDialog(user.id, isActive)
-            }
-          >
-            {isActive ? "Active" : "Deactivate"}
-          </Badge>
-        );
-      },
-    },
 
     {
       accessorKey: "created_at",
@@ -247,9 +225,6 @@ const CardsTable: React.FC = () => {
         console.log(card.id, "card table");
         return (
           <div className="flex gap-2">
-            <Badge>
-              <Pen className="w-3 h-3 mr-1" /> Edit
-            </Badge>
             {/* <Badge variant="destructive">
               <Trash className="w-3 h-3 mr-1" /> Delete
             </Badge>
