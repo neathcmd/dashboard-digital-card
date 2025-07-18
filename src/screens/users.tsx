@@ -264,11 +264,6 @@ const UsersTable = () => {
         const user = row.original;
         return (
           <div className="flex space-x-1.5 items-center">
-            <Badge>
-              <Pen />
-              Edit
-            </Badge>
-
             {/* Delete */}
 
             <AlertDialog>
